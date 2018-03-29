@@ -1,0 +1,45 @@
+body {
+   background-color: #f0f8ff;
+}
+
+hr {
+    width: 90%;
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+ul > hr {
+    width: 20%;
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+a {
+    text-decoration: none;
+}
+
+#container {
+}
+
+#header {
+    height: 100px;
+    width: 100%;
+    overflow: hidden;
+}
+
+#content {
+    height: auto;
+    text-align: center;
+}
+
+#footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+    color: #FFFFFF;
+    text-align: center;
+}

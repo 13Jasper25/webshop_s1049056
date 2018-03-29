@@ -1,0 +1,191 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Product;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+
+class ProductController extends Controller
+{
+
+    public function index()
+    {
+        // you can fetch the EntityManager via $this->getDoctrine()
+        // or you can add an argument to your action: index(EntityManagerInterface $em)
+        $em = $this->getDoctrine()->getManager();
+
+        $product = new Product();
+        $product->setName('Keyboard');
+        $product->setPrice(29.99);
+        $product->setDescription('To make beautiful music');
+        $product->setStock(50);
+        $product->setHeadline('Now on Sale');
+
+        // tell Doctrine you want to (eventually) save the Product (no queries yet)
+        $em->persist($product);
+
+        // actually executes the queries (i.e. the INSERT query)
+        $em->flush();
+
+        return new Response('Saved new product with id '.$product->getId());
+
+        //return new Response('Welcome to your new controller!');
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function addProduct(Request $request)
+    {
+        $product = new Product();
+
+        $form = $this->createFormBuilder($product)
+            ->add('name', TextType::class)
+            ->add('price', MoneyType::class)
+            ->add('description', TextType::class)
+            ->add('stock', IntegerType::class)
+            ->add('headline', TextType::class)
+            ->add('image', FileType::class, array('data_class' => null, 'required' => false))
+            ->add('add', SubmitType::class, array('label' => 'Add Product'))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            $this->formSubmit($form);
+            return $this->redirectToRoute('product_index');
+
+        }
+
+        return $this->render('admin/addProduct.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function showAction()
+    {
+        $repository = $this->getDoctrine()->getRepository(Product::class);
+
+        // look for *all* Product objects
+        $products = $repository->findAll();
+
+        if(!$products) {
+            throw $this->createNotFoundException(
+                'No product found');
+        }
+        return $this->render('admin/overview.html.twig', [
+             'admin' => $products
+         ]);
+    }
+
+    public function updateAction($id, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $product = $em->getRepository(Product::class)->find($id);
+
+        $newProduct = new Product();
+        $newProduct->setId($product->getId());
+        $newProduct->setName($product->getName());
+        $newProduct->setPrice($product->getPrice());
+        $newProduct->setDescription($product->getDescription());
+        $newProduct->setStock($product->getStock());
+        $newProduct->setHeadline($product->getHeadline());
+
+        $form = $this->createFormBuilder($product)
+            ->add('name', TextType::class)
+            ->add('price', MoneyType::class)
+            ->add('description', TextType::class)
+            ->add('stock', IntegerType::class)
+            ->add('headline', TextType::class)
+            ->add('image', FileType::class, array('data_class' => null, 'required' => false))
+            ->add('add', SubmitType::class, array('label' => 'Edit Product'))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            $this->formSubmit($form);
+            return $this->redirectToRoute('product_index');
+        }
+
+        return $this->render('admin/addProduct.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function delAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $product = $em->getRepository(Product::class)->find($id);
+
+        if(!$product) {
+            return $this->redirectToRoute('product_index');
+        }
+
+
+    $em->remove($product);
+    $em->flush();
+
+    return $this->redirectToRoute('product_index');
+
+    }
+
+    public function customShow()
+    {
+        $minPrice = 20;
+
+        $products = $this->getDoctrine()
+            ->getRepository(Product::class)
+            ->findAllGreaterThanPrice($minPrice);
+
+        return new Response($products);
+    }
+
+    private function generateUniqueFileName()
+    {
+        // md5() reduces the similarity of the file names generated by
+        // uniqid(), which is based on timestamps
+        return md5(uniqid());
+    }
+
+    private function formSubmit($form)
+    {
+        $product = $form->getData();
+
+        $img = $product->getImage();
+        if($img != null)
+        {
+            $imgName = $this->generateUniqueFileName().'.'.$img->guessExtension();
+
+            if($img->guessExtension() != 'png' )
+            {
+                return new Response('unsupported file');
+            }
+
+
+            $img->move(
+                $this->getParameter('productImages_directory'),
+                $imgName
+            );
+
+            $product->setImage($imgName);
+        }
+
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($product);
+        $em->flush();
+    }
+
+}

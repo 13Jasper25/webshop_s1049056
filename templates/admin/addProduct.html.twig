@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    <table border="1px solid black" align="center">
+        {{ form_start(form) }} <br />
+        <tr  bgcolor="#ff8c00">
+            <td colspan="2" align="center"><B>Add new product</B></td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>{{ form_widget(form.name) }}<br /></td>
+        </tr>
+
+        <tr>
+            <td>Price</td>
+            <td>{{ form_widget(form.price) }}<br /></td>
+        </tr>
+
+        <tr>
+            <td>Description</td>
+            <td>{{ form_widget(form.description) }}<br /></td>
+        </tr>
+
+        <tr>
+            <td>Stock</td>
+            <td>{{ form_widget(form.stock) }}<br /></td>
+        </tr>
+
+        <tr>
+            <td>Headline</td>
+            <td>{{ form_widget(form.headline) }}<br /></td>
+        </tr>
+
+        <tr>
+            <td>Image</td>
+            <td>{{ form_widget(form.image) }}<br /></td>
+        </tr>
+
+        <tr bgcolor="#ff8c00">
+            <td colspan="2" align="center">{{ form_end(form) }}</td>
+        </tr>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

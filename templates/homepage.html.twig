@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Homepage{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <style type="text/css"></style>
+{% endblock %}
+{% block content %}
+    <ul>
+        <a href="/shop">Go to the shop</a>
+        <hr>
+        <a href="/admin/login">Login as admin</a>
+    </ul>
+
+
+{% endblock %}

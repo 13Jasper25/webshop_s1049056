@@ -1,0 +1,31 @@
+index:
+    path: /
+    controller: App\Controller\ShopController::index
+
+product_index:
+    path: admin/productmanagement
+    controller: App\Controller\ProductController::showAction
+
+product_add:
+    path: admin/productmanagement/product/add
+    controller: App\Controller\ProductController:addProduct
+
+product_edit:
+    path: admin/productmanagement/product/edit/{id}
+    controller: App\Controller\ProductController:updateAction
+
+product_del:
+    path: admin/productmanagement/product/del/{id}
+    controller: App\Controller\ProductController:delAction
+
+product_customShow:
+    path: admin/productmanagement/product/customShow
+    controller: App\Controller\ProductController:customShow
+
+admin_overview:
+    path: /admin
+    controller: App\Controller\UserController:adminHome
+
+admin_login:
+    path: /admin/login
+    controller: App\Controller\UserController:adminLogin

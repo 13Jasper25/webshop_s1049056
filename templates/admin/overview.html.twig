@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    <a href="/admin">terug naar admin overzicht</a>
+            <table border="1px solid black" align="center" xmlns:border-radius="http://www.w3.org/1999/xhtml">
+                <tr bgcolor="#ff8c00">
+                    <td colspan="4" align="center" width="50%"><b>Product Overview ({{ products|length }})</b></td>
+                </tr>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td align="center"><a href="{{ path('product_edit', {'id': product.id}) }}"><img src="{{ asset('img/icons8-edit-24.png') }}"> </a></td>
+                    <td align="center"><a href="{{ path('product_del', {'id': product.id}) }}"><img src="{{ asset('img/icons8-trash-24.png') }}"> </a></td>
+                    <td align="center"><img src="img/product_images/{{ product.image }}" width="50px"> </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td colspan="4" align="center" bgcolor="#ff8c00"><a href="{{ path('product_add') }}"><img src="{{ asset('img/icons8-add-new-24.png') }}" width="10%"></a></td>
+                </tr>
+            </table>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}
